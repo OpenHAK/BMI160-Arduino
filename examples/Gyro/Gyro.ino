@@ -7,11 +7,15 @@
    This sketch example demonstrates how the BMI160 on the
    Intel(R) Curie(TM) module can be used to read gyroscope data
 */
-      
+
 #include <BMI160Gen.h>
+#include <Wire.h>
+#define SCL_PIN 13
+#define SDA_PIN 10
 
 void setup() {
-  Serial.begin(9600); // initialize Serial communication
+  Wire.beginOnPins(SCL_PIN,SDA_PIN);
+  Serial.begin(230400);
   while (!Serial);    // wait for the serial port to open
 
   // initialize device

@@ -18,7 +18,8 @@
  */
 
 #include "CurieIMU.h"
-#include "internal/ss_spi.h"
+#include <Wire.h>
+//#include "internal/ss_spi.h"
 #if defined(BMI160GEN_USE_CURIEIMU)
 #include "interrupt.h"
 #else
@@ -42,398 +43,398 @@
 bool CurieIMUClass::begin()
 {
 #if defined(BMI160GEN_USE_CURIEIMU)
-    /* Configure pin-mux settings on the Intel Curie module to 
-     * enable SPI mode usage */
-    SET_PIN_MODE(35, QRK_PMUX_SEL_MODEA); // SPI1_SS_MISO 
-    SET_PIN_MODE(36, QRK_PMUX_SEL_MODEA); // SPI1_SS_MOSI
-    SET_PIN_MODE(37, QRK_PMUX_SEL_MODEA); // SPI1_SS_SCK
-    SET_PIN_MODE(38, QRK_PMUX_SEL_MODEA); // SPI1_SS_CS_B[0]
+        /* Configure pin-mux settings on the Intel Curie module to
+         * enable SPI mode usage */
+        SET_PIN_MODE(35, QRK_PMUX_SEL_MODEA); // SPI1_SS_MISO
+        SET_PIN_MODE(36, QRK_PMUX_SEL_MODEA); // SPI1_SS_MOSI
+        SET_PIN_MODE(37, QRK_PMUX_SEL_MODEA); // SPI1_SS_SCK
+        SET_PIN_MODE(38, QRK_PMUX_SEL_MODEA); // SPI1_SS_CS_B[0]
 #endif
- 
-    ss_spi_init();
 
-    /* Perform a dummy read from 0x7f to switch to spi interface */
-    uint8_t dummy_reg = 0x7F;
-    serial_buffer_transfer(&dummy_reg, 1, 1);
+        //ss_spi_init();
 
-    /* The SPI interface is ready - now invoke the base class initialization */
-    BMI160Class::initialize();
+        /* Perform a dummy read from 0x7f to switch to spi interface */
+        //uint8_t dummy_reg = 0x7F;
+        //serial_buffer_transfer(&dummy_reg, 1, 1);
 
-    /** Verify the SPI connection.
-     * MakgetGyroRatee sure the device is connected and responds as expected.
-     * @return True if connection is valid, false otherwise
-     */
-    return (CURIE_IMU_CHIP_ID == getDeviceID());
+        /* The SPI interface is ready - now invoke the base class initialization */
+        BMI160Class::initialize();
+
+        /** Verify the SPI connection.
+         * MakgetGyroRatee sure the device is connected and responds as expected.
+         * @return True if connection is valid, false otherwise
+         */
+        return (CURIE_IMU_CHIP_ID == getDeviceID());
 }
 
 int CurieIMUClass::getGyroRate()
 {
-    int rate;
+        int rate;
 
-    switch(BMI160Class::getGyroRate()) {
+        switch(BMI160Class::getGyroRate()) {
         case BMI160_GYRO_RATE_25HZ:
-            rate = 25;
-            break;
+                rate = 25;
+                break;
 
         case BMI160_GYRO_RATE_50HZ:
-            rate = 50;
-            break;
+                rate = 50;
+                break;
 
         case BMI160_GYRO_RATE_100HZ:
-            rate = 100;
-            break;
+                rate = 100;
+                break;
 
         case BMI160_GYRO_RATE_200HZ:
-            rate = 200;
-            break;
+                rate = 200;
+                break;
 
         case BMI160_GYRO_RATE_400HZ:
-            rate = 400;
-            break;
+                rate = 400;
+                break;
 
         case BMI160_GYRO_RATE_800HZ:
-            rate = 800;
-            break;
+                rate = 800;
+                break;
 
         case BMI160_GYRO_RATE_1600HZ:
-            rate = 1600;
-            break;
+                rate = 1600;
+                break;
 
         case BMI160_GYRO_RATE_3200HZ:
         default:
-            rate = 3200;
-            break;
-    }
+                rate = 3200;
+                break;
+        }
 
-    return rate;
+        return rate;
 }
 
 void CurieIMUClass::setGyroRate(int rate)
 {
-    BMI160GyroRate bmiRate;
+        BMI160GyroRate bmiRate;
 
-    if (rate <= 25) {
-        bmiRate = BMI160_GYRO_RATE_25HZ;
-    } else if (rate <= 50) {
-        bmiRate = BMI160_GYRO_RATE_50HZ;
-    } else if (rate <= 100) {
-        bmiRate = BMI160_GYRO_RATE_100HZ;
-    } else if (rate <= 200) {
-        bmiRate = BMI160_GYRO_RATE_200HZ;
-    } else if (rate <= 400) {
-        bmiRate = BMI160_GYRO_RATE_400HZ;
-    } else if (rate <= 800) {
-        bmiRate = BMI160_GYRO_RATE_800HZ;
-    } else if (rate <= 1600) {
-        bmiRate = BMI160_GYRO_RATE_1600HZ;
-    } else {
-        bmiRate = BMI160_GYRO_RATE_3200HZ;
-    }
+        if (rate <= 25) {
+                bmiRate = BMI160_GYRO_RATE_25HZ;
+        } else if (rate <= 50) {
+                bmiRate = BMI160_GYRO_RATE_50HZ;
+        } else if (rate <= 100) {
+                bmiRate = BMI160_GYRO_RATE_100HZ;
+        } else if (rate <= 200) {
+                bmiRate = BMI160_GYRO_RATE_200HZ;
+        } else if (rate <= 400) {
+                bmiRate = BMI160_GYRO_RATE_400HZ;
+        } else if (rate <= 800) {
+                bmiRate = BMI160_GYRO_RATE_800HZ;
+        } else if (rate <= 1600) {
+                bmiRate = BMI160_GYRO_RATE_1600HZ;
+        } else {
+                bmiRate = BMI160_GYRO_RATE_3200HZ;
+        }
 
-    BMI160Class::setGyroRate(bmiRate);
+        BMI160Class::setGyroRate(bmiRate);
 }
 
 float CurieIMUClass::getAccelerometerRate()
 {
-    float rate;
+        float rate;
 
-    switch(BMI160Class::getAccelRate()) {
+        switch(BMI160Class::getAccelRate()) {
         case BMI160_ACCEL_RATE_25_2HZ:
-            rate = 12.5;
-            break;
+                rate = 12.5;
+                break;
 
         case BMI160_ACCEL_RATE_25HZ:
-            rate = 25;
-            break;
+                rate = 25;
+                break;
 
         case BMI160_ACCEL_RATE_50HZ:
-            rate = 50;
-            break;
+                rate = 50;
+                break;
 
         case BMI160_ACCEL_RATE_100HZ:
-            rate = 100;
-            break;
+                rate = 100;
+                break;
 
         case BMI160_ACCEL_RATE_200HZ:
-            rate = 200;
-            break;
+                rate = 200;
+                break;
 
         case BMI160_ACCEL_RATE_400HZ:
-            rate = 400;
-            break;
+                rate = 400;
+                break;
 
         case BMI160_ACCEL_RATE_800HZ:
-            rate = 800;
-            break;
+                rate = 800;
+                break;
 
         case BMI160_ACCEL_RATE_1600HZ:
         default:
-            rate = 1600;
-            break;
-    }
+                rate = 1600;
+                break;
+        }
 
-    return rate;
+        return rate;
 }
 
 void CurieIMUClass::setAccelerometerRate(float rate)
 {
-    BMI160AccelRate bmiRate;
+        BMI160AccelRate bmiRate;
 
-    if (rate <= 12.5) {
-        bmiRate = BMI160_ACCEL_RATE_25_2HZ;
-    } else if (rate <= 25) {
-        bmiRate = BMI160_ACCEL_RATE_25HZ;
-    } else if (rate <= 50) {
-        bmiRate = BMI160_ACCEL_RATE_50HZ;
-    } else if (rate <= 100) {
-        bmiRate = BMI160_ACCEL_RATE_100HZ;
-    } else if (rate <= 200) {
-        bmiRate = BMI160_ACCEL_RATE_200HZ;
-    } else if (rate <= 400) {
-        bmiRate = BMI160_ACCEL_RATE_400HZ;
-    } else if (rate <= 800) {
-        bmiRate = BMI160_ACCEL_RATE_800HZ;
-    } else {
-        bmiRate = BMI160_ACCEL_RATE_1600HZ;
-    }
+        if (rate <= 12.5) {
+                bmiRate = BMI160_ACCEL_RATE_25_2HZ;
+        } else if (rate <= 25) {
+                bmiRate = BMI160_ACCEL_RATE_25HZ;
+        } else if (rate <= 50) {
+                bmiRate = BMI160_ACCEL_RATE_50HZ;
+        } else if (rate <= 100) {
+                bmiRate = BMI160_ACCEL_RATE_100HZ;
+        } else if (rate <= 200) {
+                bmiRate = BMI160_ACCEL_RATE_200HZ;
+        } else if (rate <= 400) {
+                bmiRate = BMI160_ACCEL_RATE_400HZ;
+        } else if (rate <= 800) {
+                bmiRate = BMI160_ACCEL_RATE_800HZ;
+        } else {
+                bmiRate = BMI160_ACCEL_RATE_1600HZ;
+        }
 
-    setAccelRate(bmiRate);
+        setAccelRate(bmiRate);
 }
 
 int CurieIMUClass::getGyroRange()
 {
-    int range;
+        int range;
 
-    switch (getFullScaleGyroRange()) {
+        switch (getFullScaleGyroRange()) {
         case BMI160_GYRO_RANGE_2000:
-            range = 2000;
-            break;
+                range = 2000;
+                break;
 
         case BMI160_GYRO_RANGE_1000:
-            range = 1000;
-            break;
+                range = 1000;
+                break;
 
         case BMI160_GYRO_RANGE_500:
-            range = 500;
-            break;
+                range = 500;
+                break;
 
         case BMI160_GYRO_RANGE_250:
-            range = 250;
-            break;
+                range = 250;
+                break;
 
         case BMI160_GYRO_RANGE_125:
         default:
-            range = 125;
-            break;
-    }
+                range = 125;
+                break;
+        }
 
-    return range;
+        return range;
 }
 
 void CurieIMUClass::setGyroRange(int range)
 {
-    BMI160GyroRange bmiRange;
+        BMI160GyroRange bmiRange;
 
-    if (range >= 2000) {
-        bmiRange = BMI160_GYRO_RANGE_2000;
-    } else if (range >= 1000) {
-        bmiRange = BMI160_GYRO_RANGE_1000;
-    } else if (range >= 500) {
-        bmiRange = BMI160_GYRO_RANGE_500;
-    } else if (range >= 250) {
-        bmiRange = BMI160_GYRO_RANGE_250;
-    } else {
-        bmiRange = BMI160_GYRO_RANGE_125;
-    }
+        if (range >= 2000) {
+                bmiRange = BMI160_GYRO_RANGE_2000;
+        } else if (range >= 1000) {
+                bmiRange = BMI160_GYRO_RANGE_1000;
+        } else if (range >= 500) {
+                bmiRange = BMI160_GYRO_RANGE_500;
+        } else if (range >= 250) {
+                bmiRange = BMI160_GYRO_RANGE_250;
+        } else {
+                bmiRange = BMI160_GYRO_RANGE_125;
+        }
 
-    setFullScaleGyroRange(bmiRange);
+        setFullScaleGyroRange(bmiRange);
 }
 
 int CurieIMUClass::getAccelerometerRange()
 {
-    int range;
+        int range;
 
-    switch (getFullScaleAccelRange()) {
+        switch (getFullScaleAccelRange()) {
         case BMI160_ACCEL_RANGE_2G:
-            range = 2;
-            break;
+                range = 2;
+                break;
 
         case BMI160_ACCEL_RANGE_4G:
-            range = 4;
-            break;
+                range = 4;
+                break;
 
         case BMI160_ACCEL_RANGE_8G:
-            range = 8;
-            break;
+                range = 8;
+                break;
 
         case BMI160_ACCEL_RANGE_16G:
         default:
-            range = 16;
-            break;
-    }
+                range = 16;
+                break;
+        }
 
-    return range;
+        return range;
 }
 
 void CurieIMUClass::setAccelerometerRange(int range)
 {
-    BMI160AccelRange bmiRange;
+        BMI160AccelRange bmiRange;
 
-    if (range <= 2) {
-        bmiRange = BMI160_ACCEL_RANGE_2G;
-    } else if (range <= 4) {
-        bmiRange = BMI160_ACCEL_RANGE_4G;
-    } else if (range <= 8) {
-        bmiRange = BMI160_ACCEL_RANGE_8G;
-    } else {
-        bmiRange = BMI160_ACCEL_RANGE_16G;
-    }
+        if (range <= 2) {
+                bmiRange = BMI160_ACCEL_RANGE_2G;
+        } else if (range <= 4) {
+                bmiRange = BMI160_ACCEL_RANGE_4G;
+        } else if (range <= 8) {
+                bmiRange = BMI160_ACCEL_RANGE_8G;
+        } else {
+                bmiRange = BMI160_ACCEL_RANGE_16G;
+        }
 
-    setFullScaleAccelRange(bmiRange);
+        setFullScaleAccelRange(bmiRange);
 }
 
 void CurieIMUClass::autoCalibrateGyroOffset()
 {
-    BMI160Class::autoCalibrateGyroOffset();
+        BMI160Class::autoCalibrateGyroOffset();
 
-    setGyroOffsetEnabled(true);
+        setGyroOffsetEnabled(true);
 }
 
 void CurieIMUClass::autoCalibrateAccelerometerOffset(int axis, int target)
 {
-    switch (axis) {
+        switch (axis) {
         case X_AXIS:
-            autoCalibrateXAccelOffset(target);
-            break;
+                autoCalibrateXAccelOffset(target);
+                break;
 
         case Y_AXIS:
-            autoCalibrateYAccelOffset(target);
-            break;
+                autoCalibrateYAccelOffset(target);
+                break;
 
         case Z_AXIS:
-            autoCalibrateZAccelOffset(target);
-            break;
+                autoCalibrateZAccelOffset(target);
+                break;
 
         default:
-            break;
-    }
+                break;
+        }
 
-    setAccelOffsetEnabled(true);
+        setAccelOffsetEnabled(true);
 }
 
 void CurieIMUClass::noGyroOffset()
 {
-    setGyroOffsetEnabled(false);
+        setGyroOffsetEnabled(false);
 }
 
 void CurieIMUClass::noAccelerometerOffset()
 {
-    setAccelOffsetEnabled(false);
+        setAccelOffsetEnabled(false);
 }
 
 bool CurieIMUClass::gyroOffsetEnabled()
 {
-    return getGyroOffsetEnabled();
+        return getGyroOffsetEnabled();
 }
 
 bool CurieIMUClass::accelerometerOffsetEnabled()
 {
-    return getAccelOffsetEnabled();
+        return getAccelOffsetEnabled();
 }
 
 float CurieIMUClass::getGyroOffset(int axis)
 {
-    int bmiOffset;
+        int bmiOffset;
 
-    if (axis == X_AXIS) {
-        bmiOffset = getXGyroOffset();
-    } else if (axis == Y_AXIS) {
-        bmiOffset = getYGyroOffset();
-    } else if (axis == Z_AXIS) {
-        bmiOffset = getZGyroOffset();
-    } else {
-        return -1;
-    }
+        if (axis == X_AXIS) {
+                bmiOffset = getXGyroOffset();
+        } else if (axis == Y_AXIS) {
+                bmiOffset = getYGyroOffset();
+        } else if (axis == Z_AXIS) {
+                bmiOffset = getZGyroOffset();
+        } else {
+                return -1;
+        }
 
-    return (bmiOffset * 0.061);
+        return (bmiOffset * 0.061);
 }
 
 float CurieIMUClass::getAccelerometerOffset(int axis)
 {
-    int bmiOffset;
+        int bmiOffset;
 
-    if (axis == X_AXIS) {
-        bmiOffset = getXAccelOffset();
-    } else if (axis == Y_AXIS) {
-        bmiOffset = getYAccelOffset();
-    } else if (axis == Z_AXIS) {
-        bmiOffset = getZAccelOffset();
-    } else {
-        return -1;
-    }
+        if (axis == X_AXIS) {
+                bmiOffset = getXAccelOffset();
+        } else if (axis == Y_AXIS) {
+                bmiOffset = getYAccelOffset();
+        } else if (axis == Z_AXIS) {
+                bmiOffset = getZAccelOffset();
+        } else {
+                return -1;
+        }
 
-    return (bmiOffset * 3.9);
+        return (bmiOffset * 3.9);
 }
 
 void CurieIMUClass::setGyroOffset(int axis, float offset)
 {
-    int bmiOffset = offset / 0.061;
+        int bmiOffset = offset / 0.061;
 
-    if (bmiOffset < -512) {
-        bmiOffset = -512;
-    } else if (bmiOffset > 511) {
-        bmiOffset = 511;
-    }
+        if (bmiOffset < -512) {
+                bmiOffset = -512;
+        } else if (bmiOffset > 511) {
+                bmiOffset = 511;
+        }
 
-    if (axis == X_AXIS) {
-        setXGyroOffset(bmiOffset);
-    } else if (axis == Y_AXIS) {
-        setYGyroOffset(bmiOffset);
-    } else if (axis == Z_AXIS) {
-        setZGyroOffset(bmiOffset);
-    }
+        if (axis == X_AXIS) {
+                setXGyroOffset(bmiOffset);
+        } else if (axis == Y_AXIS) {
+                setYGyroOffset(bmiOffset);
+        } else if (axis == Z_AXIS) {
+                setZGyroOffset(bmiOffset);
+        }
 
-    setGyroOffsetEnabled(true);
+        setGyroOffsetEnabled(true);
 }
 
 void CurieIMUClass::setAccelerometerOffset(int axis, float offset)
 {
-    int bmiOffset = offset / 3.9;
+        int bmiOffset = offset / 3.9;
 
-    if (bmiOffset < -128) {
-        bmiOffset = -128;
-    } else if (bmiOffset > 127) {
-        bmiOffset = 127;
-    }
+        if (bmiOffset < -128) {
+                bmiOffset = -128;
+        } else if (bmiOffset > 127) {
+                bmiOffset = 127;
+        }
 
-    if (axis == X_AXIS) {
-        setXAccelOffset(bmiOffset);
-    } else if (axis == Y_AXIS) {
-        setYAccelOffset(bmiOffset);
-    } else if (axis == Z_AXIS) {
-        setZAccelOffset(bmiOffset);
-    }
+        if (axis == X_AXIS) {
+                setXAccelOffset(bmiOffset);
+        } else if (axis == Y_AXIS) {
+                setYAccelOffset(bmiOffset);
+        } else if (axis == Z_AXIS) {
+                setZAccelOffset(bmiOffset);
+        }
 
-    setAccelOffsetEnabled(true);
+        setAccelOffsetEnabled(true);
 }
 
 float CurieIMUClass::getDetectionThreshold(int feature)
 {
-    switch (feature) {
+        switch (feature) {
         case CURIE_IMU_FREEFALL:
-            return getFreefallDetectionThreshold();
+                return getFreefallDetectionThreshold();
 
         case CURIE_IMU_SHOCK:
-            return getShockDetectionThreshold();
+                return getShockDetectionThreshold();
 
         case CURIE_IMU_MOTION:
-            return getMotionDetectionThreshold();
+                return getMotionDetectionThreshold();
 
         case CURIE_IMU_ZERO_MOTION:
-            return getZeroMotionDetectionThreshold();
+                return getZeroMotionDetectionThreshold();
 
         case CURIE_IMU_TAP:
-            return getTapDetectionThreshold();
+                return getTapDetectionThreshold();
 
         case CURIE_IMU_STEP:
         case CURIE_IMU_TAP_SHOCK:
@@ -442,32 +443,32 @@ float CurieIMUClass::getDetectionThreshold(int feature)
         case CURIE_IMU_FIFO_FULL:
         case CURIE_IMU_DATA_READY:
         default:
-            return -1;
-    }
+                return -1;
+        }
 }
 
 void CurieIMUClass::setDetectionThreshold(int feature, float threshold)
 {
-    switch (feature) {
+        switch (feature) {
         case CURIE_IMU_FREEFALL:
-            setFreefallDetectionThreshold(threshold);
-            break;
+                setFreefallDetectionThreshold(threshold);
+                break;
 
         case CURIE_IMU_SHOCK:
-            setShockDetectionThreshold(threshold);
-            break;
+                setShockDetectionThreshold(threshold);
+                break;
 
         case CURIE_IMU_MOTION:
-            setMotionDetectionThreshold(threshold);
-            break;
+                setMotionDetectionThreshold(threshold);
+                break;
 
         case CURIE_IMU_ZERO_MOTION:
-            setZeroMotionDetectionThreshold(threshold);
-            break;
+                setZeroMotionDetectionThreshold(threshold);
+                break;
 
         case CURIE_IMU_TAP:
-            setTapDetectionThreshold(threshold);
-            break;
+                setTapDetectionThreshold(threshold);
+                break;
 
         case CURIE_IMU_STEP:
         case CURIE_IMU_TAP_SHOCK:
@@ -476,1255 +477,1280 @@ void CurieIMUClass::setDetectionThreshold(int feature, float threshold)
         case CURIE_IMU_FIFO_FULL:
         case CURIE_IMU_DATA_READY:
         default:
-            break;
-    }
+                break;
+        }
 }
 
 float CurieIMUClass::getDetectionDuration(int feature)
 {
-    switch (feature) {
+        switch (feature) {
         case CURIE_IMU_FREEFALL:
-            return getFreefallDetectionDuration();
+                return getFreefallDetectionDuration();
 
         case CURIE_IMU_SHOCK:
-            return getShockDetectionDuration();
+                return getShockDetectionDuration();
 
         case CURIE_IMU_MOTION:
-            return getMotionDetectionDuration();
+                return getMotionDetectionDuration();
 
         case CURIE_IMU_TAP_SHOCK:
-            return getTapShockDuration();
+                return getTapShockDuration();
 
         case CURIE_IMU_ZERO_MOTION:
-            return getZeroMotionDetectionDuration();
+                return getZeroMotionDetectionDuration();
 
         case CURIE_IMU_TAP_QUIET:
-            return getTapQuietDuration();
+                return getTapQuietDuration();
 
         case CURIE_IMU_DOUBLE_TAP:
-            return getDoubleTapDetectionDuration();
+                return getDoubleTapDetectionDuration();
 
         case CURIE_IMU_TAP:
         case CURIE_IMU_STEP:
         case CURIE_IMU_FIFO_FULL:
         case CURIE_IMU_DATA_READY:
         default:
-            return -1;
-    }
+                return -1;
+        }
 }
 
 float CurieIMUClass::getFreefallDetectionThreshold()
 {
-    int bmiThreshold = BMI160Class::getFreefallDetectionThreshold();
+        int bmiThreshold = BMI160Class::getFreefallDetectionThreshold();
 
-    return (bmiThreshold * 7.81) + 3.91;
+        return (bmiThreshold * 7.81) + 3.91;
 }
 
 void CurieIMUClass::setFreefallDetectionThreshold(float threshold)
 {
-    int bmiThreshold = (threshold - 3.91) / 7.81;
+        int bmiThreshold = (threshold - 3.91) / 7.81;
 
-    if (bmiThreshold < 0) {
-        bmiThreshold = 0;
-    } else if (bmiThreshold > 255) {
-        bmiThreshold = 255;
-    }
+        if (bmiThreshold < 0) {
+                bmiThreshold = 0;
+        } else if (bmiThreshold > 255) {
+                bmiThreshold = 255;
+        }
 
-    BMI160Class::setFreefallDetectionThreshold(bmiThreshold);
+        BMI160Class::setFreefallDetectionThreshold(bmiThreshold);
 }
 
 float CurieIMUClass::getShockDetectionThreshold()
 {
-    int bmiThreshold = BMI160Class::getShockDetectionThreshold();
-    float step;
-    float min;
+        int bmiThreshold = BMI160Class::getShockDetectionThreshold();
+        float step;
+        float min;
 
-    switch (getAccelerometerRange()) {
+        switch (getAccelerometerRange()) {
         case 2:
-            step = 7.81;
-            min = 3.91;
-            break;
+                step = 7.81;
+                min = 3.91;
+                break;
 
         case 4:
-            step = 15.63;
-            min = 7.81;
-            break;
+                step = 15.63;
+                min = 7.81;
+                break;
 
         case 8:
-            step = 31.25;
-            min = 15.63;
-            break;
+                step = 31.25;
+                min = 15.63;
+                break;
 
         case 16:
         default:
-            step = 62.50;
-            min = 31.25;
-            break;
-    }
+                step = 62.50;
+                min = 31.25;
+                break;
+        }
 
-    return (bmiThreshold * step) + min;
+        return (bmiThreshold * step) + min;
 }
 
 void CurieIMUClass::setShockDetectionThreshold(float threshold)
 {
-    int bmiThreshold;
+        int bmiThreshold;
 
-    switch (getAccelerometerRange()) {
+        switch (getAccelerometerRange()) {
         case 2:
-            bmiThreshold = (threshold - 3.91) / 7.81;
-            break;
+                bmiThreshold = (threshold - 3.91) / 7.81;
+                break;
 
         case 4:
-            bmiThreshold = (threshold - 7.81) / 15.6;
-            break;
+                bmiThreshold = (threshold - 7.81) / 15.6;
+                break;
 
         case 8:
-            bmiThreshold = (threshold - 15.63) / 31.25;
-            break;
+                bmiThreshold = (threshold - 15.63) / 31.25;
+                break;
 
         case 16:
         default:
-            bmiThreshold = (threshold - 31.25) / 62.50;
-            break;
-    }
+                bmiThreshold = (threshold - 31.25) / 62.50;
+                break;
+        }
 
-    if (bmiThreshold < 0) {
-        bmiThreshold = 0;
-    } else if (bmiThreshold > 255) {
-        bmiThreshold = 255;
-    }
+        if (bmiThreshold < 0) {
+                bmiThreshold = 0;
+        } else if (bmiThreshold > 255) {
+                bmiThreshold = 255;
+        }
 
-    BMI160Class::setShockDetectionThreshold(bmiThreshold);
+        BMI160Class::setShockDetectionThreshold(bmiThreshold);
 }
 
 float CurieIMUClass::getMotionDetectionThreshold()
 {
-    int bmiThreshold = BMI160Class::getMotionDetectionThreshold();
-    float step;
+        int bmiThreshold = BMI160Class::getMotionDetectionThreshold();
+        float step;
 
-    switch (getAccelerometerRange()) {
+        switch (getAccelerometerRange()) {
         case 2:
-            step = 3.91;
-            break;
+                step = 3.91;
+                break;
 
         case 4:
-            step = 7.81;
-            break;
+                step = 7.81;
+                break;
 
         case 8:
-            step = 15.63;
-            break;
+                step = 15.63;
+                break;
 
         case 16:
         default:
-            step = 31.25;
-            break;
-    }
+                step = 31.25;
+                break;
+        }
 
-    return (bmiThreshold * step);
+        return (bmiThreshold * step);
 }
 
 void CurieIMUClass::setMotionDetectionThreshold(float threshold)
 {
-    int bmiThreshold;
+        int bmiThreshold;
 
-    switch (getAccelerometerRange()) {
+        switch (getAccelerometerRange()) {
         case 2:
-            bmiThreshold = threshold / 3.91;
-            break;
+                bmiThreshold = threshold / 3.91;
+                break;
 
         case 4:
-            bmiThreshold = threshold / 7.81;
-            break;
+                bmiThreshold = threshold / 7.81;
+                break;
 
         case 8:
-            bmiThreshold = threshold / 15.63;
-            break;
+                bmiThreshold = threshold / 15.63;
+                break;
 
         case 16:
         default:
-            bmiThreshold = threshold / 31.25;
-            break;
-    }
+                bmiThreshold = threshold / 31.25;
+                break;
+        }
 
-    if (bmiThreshold < 0) {
-        bmiThreshold = 0;
-    } else if (bmiThreshold > 255) {
-        bmiThreshold = 255;
-    }
+        if (bmiThreshold < 0) {
+                bmiThreshold = 0;
+        } else if (bmiThreshold > 255) {
+                bmiThreshold = 255;
+        }
 
-    BMI160Class::setMotionDetectionThreshold(bmiThreshold);
+        BMI160Class::setMotionDetectionThreshold(bmiThreshold);
 }
 
 float CurieIMUClass::getZeroMotionDetectionThreshold()
 {
-    int bmiThreshold = BMI160Class::getZeroMotionDetectionThreshold();
-    float step;
+        int bmiThreshold = BMI160Class::getZeroMotionDetectionThreshold();
+        float step;
 
-    switch (getAccelerometerRange()) {
+        switch (getAccelerometerRange()) {
         case 2:
-            step = 3.91;
-            break;
+                step = 3.91;
+                break;
 
         case 4:
-            step = 7.81;
-            break;
+                step = 7.81;
+                break;
 
         case 8:
-            step = 15.63;
-            break;
+                step = 15.63;
+                break;
 
         case 16:
         default:
-            step = 31.25;
-            break;
-    }
+                step = 31.25;
+                break;
+        }
 
-    return (bmiThreshold * step);
+        return (bmiThreshold * step);
 }
 
 void CurieIMUClass::setZeroMotionDetectionThreshold(float threshold)
 {
-    int bmiThreshold;
+        int bmiThreshold;
 
-    switch (getAccelerometerRange()) {
+        switch (getAccelerometerRange()) {
         case 2:
-            bmiThreshold = threshold / 3.91;
-            break;
+                bmiThreshold = threshold / 3.91;
+                break;
 
         case 4:
-            bmiThreshold = threshold / 7.81;
-            break;
+                bmiThreshold = threshold / 7.81;
+                break;
 
         case 8:
-            bmiThreshold = threshold / 15.63;
-            break;
+                bmiThreshold = threshold / 15.63;
+                break;
 
         case 16:
         default:
-            bmiThreshold = threshold / 31.25;
-            break;
-    }
+                bmiThreshold = threshold / 31.25;
+                break;
+        }
 
-    if (bmiThreshold < 0) {
-        bmiThreshold = 0;
-    } else if (bmiThreshold > 255) {
-        bmiThreshold = 255;
-    }
+        if (bmiThreshold < 0) {
+                bmiThreshold = 0;
+        } else if (bmiThreshold > 255) {
+                bmiThreshold = 255;
+        }
 
-    BMI160Class::setZeroMotionDetectionThreshold(bmiThreshold);
+        BMI160Class::setZeroMotionDetectionThreshold(bmiThreshold);
 }
 
 float CurieIMUClass::getTapDetectionThreshold()
 {
-    int bmiThreshold = BMI160Class::getTapDetectionThreshold();
-    float step;
-    float min;
+        int bmiThreshold = BMI160Class::getTapDetectionThreshold();
+        float step;
+        float min;
 
-    switch (getAccelerometerRange()) {
+        switch (getAccelerometerRange()) {
         case 2:
-            step = 62.5;
-            min = 31.25;
-            break;
+                step = 62.5;
+                min = 31.25;
+                break;
 
         case 4:
-            step = 125.0;
-            min = 62.5;
-            break;
+                step = 125.0;
+                min = 62.5;
+                break;
 
         case 8:
-            step = 250.0;
-            min = 125.0;
-            break;
+                step = 250.0;
+                min = 125.0;
+                break;
 
         case 16:
         default:
-            step = 500.0;
-            min = 250.0;
-            break;
-    }
+                step = 500.0;
+                min = 250.0;
+                break;
+        }
 
-    return (bmiThreshold * step) + min;
+        return (bmiThreshold * step) + min;
 }
 
 void CurieIMUClass::setTapDetectionThreshold(float threshold)
 {
-    int bmiThreshold;
+        int bmiThreshold;
 
-    switch (getAccelerometerRange()) {
+        switch (getAccelerometerRange()) {
         case 2:
-            bmiThreshold = (threshold - 31.25) / 62.5;
-            break;
+                bmiThreshold = (threshold - 31.25) / 62.5;
+                break;
 
         case 4:
-            bmiThreshold = (threshold - 62.5) / 125.0;
-            break;
+                bmiThreshold = (threshold - 62.5) / 125.0;
+                break;
 
         case 8:
-            bmiThreshold = (threshold - 125.0) / 250.0;
-            break;
+                bmiThreshold = (threshold - 125.0) / 250.0;
+                break;
 
         case 16:
         default:
-            bmiThreshold = (threshold - 2500) / 500.0;
-            break;
-    }
+                bmiThreshold = (threshold - 2500) / 500.0;
+                break;
+        }
 
-    if (bmiThreshold < 0) {
-        bmiThreshold = 0;
-    } else if (bmiThreshold > 255) {
-        bmiThreshold = 255;
-    }
+        if (bmiThreshold < 0) {
+                bmiThreshold = 0;
+        } else if (bmiThreshold > 255) {
+                bmiThreshold = 255;
+        }
 
-    BMI160Class::setTapDetectionThreshold(bmiThreshold);
+        BMI160Class::setTapDetectionThreshold(bmiThreshold);
 }
 
 void CurieIMUClass::setDetectionDuration(int feature, float value)
 {
-    switch (feature) {
+        switch (feature) {
         case CURIE_IMU_FREEFALL:
-            setFreefallDetectionDuration(value);
-            break;
+                setFreefallDetectionDuration(value);
+                break;
 
         case CURIE_IMU_SHOCK:
-            setShockDetectionDuration(value);
-            break;
+                setShockDetectionDuration(value);
+                break;
 
         case CURIE_IMU_MOTION:
-            setMotionDetectionDuration(value);
-            break;
+                setMotionDetectionDuration(value);
+                break;
 
         case CURIE_IMU_TAP_SHOCK:
-            setTapShockDuration(value);
-            break;
+                setTapShockDuration(value);
+                break;
 
         case CURIE_IMU_ZERO_MOTION:
-            setZeroMotionDetectionThreshold(value);
-            break;
+                setZeroMotionDetectionThreshold(value);
+                break;
 
         case CURIE_IMU_TAP_QUIET:
-            setTapQuietDuration(value);
-            break;
+                setTapQuietDuration(value);
+                break;
 
         case CURIE_IMU_DOUBLE_TAP:
-            setDoubleTapDetectionDuration(value);
-            break;
+                setDoubleTapDetectionDuration(value);
+                break;
 
         case CURIE_IMU_TAP:
         case CURIE_IMU_STEP:
         case CURIE_IMU_FIFO_FULL:
         case CURIE_IMU_DATA_READY:
         default:
-            break;
-    }
+                break;
+        }
 }
 
 float CurieIMUClass::getFreefallDetectionDuration()
 {
-    int bmiDuration = BMI160Class::getFreefallDetectionDuration();
+        int bmiDuration = BMI160Class::getFreefallDetectionDuration();
 
-    return ((bmiDuration + 1) * 2.5);
+        return ((bmiDuration + 1) * 2.5);
 }
 
 void CurieIMUClass::setFreefallDetectionDuration(float duration)
 {
-    int bmiDuration = (duration - 2.5) / 2.5;
+        int bmiDuration = (duration - 2.5) / 2.5;
 
-    if (bmiDuration < 0) {
-        bmiDuration = 0;
-    } else if (bmiDuration > 255) {
-        bmiDuration = 255;
-    }
+        if (bmiDuration < 0) {
+                bmiDuration = 0;
+        } else if (bmiDuration > 255) {
+                bmiDuration = 255;
+        }
 
-    BMI160Class::setFreefallDetectionDuration(bmiDuration);
+        BMI160Class::setFreefallDetectionDuration(bmiDuration);
 }
 
 int CurieIMUClass::getShockDetectionDuration()
 {
-    int duration;
+        int duration;
 
-    switch (BMI160Class::getShockDetectionDuration()) {
+        switch (BMI160Class::getShockDetectionDuration()) {
         case BMI160_TAP_SHOCK_DURATION_50MS:
-            duration = 50;
-            break;
+                duration = 50;
+                break;
 
         case BMI160_TAP_SHOCK_DURATION_75MS:
         default:
-            duration = 75;
-            break;
-    }
+                duration = 75;
+                break;
+        }
 
-    return duration;
+        return duration;
 }
 void CurieIMUClass::setShockDetectionDuration(int duration)
 {
-    BMI160TapShockDuration bmiDuration;
+        BMI160TapShockDuration bmiDuration;
 
-    if (duration <= 50) {
-        bmiDuration = BMI160_TAP_SHOCK_DURATION_50MS;
-    } else {
-        bmiDuration = BMI160_TAP_SHOCK_DURATION_75MS;
-    }
+        if (duration <= 50) {
+                bmiDuration = BMI160_TAP_SHOCK_DURATION_50MS;
+        } else {
+                bmiDuration = BMI160_TAP_SHOCK_DURATION_75MS;
+        }
 
-    BMI160Class::setShockDetectionDuration(bmiDuration);
+        BMI160Class::setShockDetectionDuration(bmiDuration);
 }
 
 float CurieIMUClass::getMotionDetectionDuration()
 {
-    int bmiDuration = BMI160Class::getMotionDetectionDuration();
+        int bmiDuration = BMI160Class::getMotionDetectionDuration();
 
-    return (bmiDuration / getAccelerometerRate());
+        return (bmiDuration / getAccelerometerRate());
 
 
 }
 void CurieIMUClass::setMotionDetectionDuration(float duration)
 {
-    int bmiDuration = (duration * getAccelerometerRate());
+        int bmiDuration = (duration * getAccelerometerRate());
 
-    if (bmiDuration < 1) {
-        bmiDuration = 1;
-    } else if (bmiDuration > 4) {
-        bmiDuration = 4;
-    }
+        if (bmiDuration < 1) {
+                bmiDuration = 1;
+        } else if (bmiDuration > 4) {
+                bmiDuration = 4;
+        }
 
-    BMI160Class::setMotionDetectionDuration(bmiDuration);
+        BMI160Class::setMotionDetectionDuration(bmiDuration);
 }
 
 float CurieIMUClass::getZeroMotionDetectionDuration()
 {
-    float duration;
+        float duration;
 
-    switch (BMI160Class::getZeroMotionDetectionDuration()) {
+        switch (BMI160Class::getZeroMotionDetectionDuration()) {
         case BMI160_ZERO_MOTION_DURATION_1_28S:
-            duration = 1.28;
-            break;
+                duration = 1.28;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_2_56S:
-            duration = 2.56;
-            break;
+                duration = 2.56;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_3_84S:
-            duration = 3.84;
-            break;
+                duration = 3.84;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_5_12S:
-            duration = 5.12;
-            break;
+                duration = 5.12;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_6_40S:
-            duration = 6.40;
-            break;
+                duration = 6.40;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_7_68S:
-            duration = 7.68;
-            break;
+                duration = 7.68;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_8_96S:
-            duration = 8.96;
-            break;
+                duration = 8.96;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_10_24S:
-            duration = 10.24;
-            break;
+                duration = 10.24;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_11_52S:
-            duration = 11.52;
-            break;
+                duration = 11.52;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_12_80S:
-            duration = 12.80;
-            break;
+                duration = 12.80;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_14_08S:
-            duration = 14.08;
-            break;
+                duration = 14.08;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_15_36S:
-            duration = 15.36;
-            break;
+                duration = 15.36;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_16_64S:
-            duration = 16.64;
-            break;
+                duration = 16.64;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_17_92S:
-            duration = 17.92;
-            break;
+                duration = 17.92;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_19_20S:
-            duration = 19.20;
-            break;
+                duration = 19.20;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_20_48S:
-            duration = 20.48;
-            break;
+                duration = 20.48;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_25_60S:
-            duration = 25.60;
-            break;
+                duration = 25.60;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_30_72S:
-            duration = 30.72;
-            break;
+                duration = 30.72;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_35_84S:
-            duration = 35.84;
-            break;
+                duration = 35.84;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_40_96S:
-            duration = 40.96;
-            break;
+                duration = 40.96;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_46_08S:
-            duration = 46.08;
-            break;
+                duration = 46.08;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_51_20S:
-            duration = 51.20;
-            break;
+                duration = 51.20;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_56_32S:
-            duration = 56.32;
-            break;
+                duration = 56.32;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_61_44S:
-            duration = 61.44;
-            break;
+                duration = 61.44;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_66_56S:
-            duration = 66.56;
-            break;
+                duration = 66.56;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_71_68S:
-            duration = 71.68;
-            break;
+                duration = 71.68;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_76_80S:
-            duration = 76.80;
-            break;
+                duration = 76.80;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_81_92S:
-            duration = 81.92;
-            break;
+                duration = 81.92;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_87_04S:
-            duration = 87.04;
-            break;
+                duration = 87.04;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_92_16S:
-            duration = 92.16;
-            break;
+                duration = 92.16;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_97_28S:
-            duration = 97.28;
-            break;
+                duration = 97.28;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_102_40S:
-            duration = 102.40;
-            break;
+                duration = 102.40;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_112_64S:
-            duration = 112.64;
-            break;
+                duration = 112.64;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_122_88S:
-            duration = 122.88;
-            break;
+                duration = 122.88;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_133_12S:
-            duration = 133.12;
-            break;
+                duration = 133.12;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_143_36S:
-            duration = 143.36;
-            break;
+                duration = 143.36;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_153_60S:
-            duration = 153.60;
-            break;
+                duration = 153.60;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_163_84S:
-            duration = 163.84;
-            break;
+                duration = 163.84;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_174_08S:
-            duration = 174.08;
-            break;
+                duration = 174.08;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_184_32S:
-            duration = 184.32;
-            break;
+                duration = 184.32;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_194_56S:
-            duration = 194.56;
-            break;
+                duration = 194.56;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_204_80S:
-            duration = 204.80;
-            break;
+                duration = 204.80;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_215_04S:
-            duration = 215.04;
-            break;
+                duration = 215.04;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_225_28S:
-            duration = 225.28;
-            break;
+                duration = 225.28;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_235_52S:
-            duration = 235.52;
-            break;
+                duration = 235.52;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_245_76S:
-            duration = 245.76;
-            break;
+                duration = 245.76;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_256_00S:
-            duration = 256.00;
-            break;
+                duration = 256.00;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_266_24S:
-            duration = 266.24;
-            break;
+                duration = 266.24;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_276_48S:
-            duration = 276.48;
-            break;
+                duration = 276.48;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_286_72S:
-            duration = 286.72;
-            break;
+                duration = 286.72;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_296_96S:
-            duration = 296.96;
-            break;
+                duration = 296.96;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_307_20S:
-            duration = 307.20;
-            break;
+                duration = 307.20;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_317_44S:
-            duration = 317.44;
-            break;
+                duration = 317.44;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_327_68S:
-            duration = 327.68;
-            break;
+                duration = 327.68;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_337_92S:
-            duration = 337.92;
-            break;
+                duration = 337.92;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_348_16S:
-            duration = 348.16;
-            break;
+                duration = 348.16;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_358_40S:
-            duration = 358.40;
-            break;
+                duration = 358.40;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_368_64S:
-            duration = 368.64;
-            break;
+                duration = 368.64;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_378_88S:
-            duration = 378.88;
-            break;
+                duration = 378.88;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_389_12S:
-            duration = 389.12;
-            break;
+                duration = 389.12;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_399_36S:
-            duration = 399.36;
-            break;
+                duration = 399.36;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_409_60S:
-            duration = 409.60;
-            break;
+                duration = 409.60;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_419_84S:
-            duration = 419.84;
-            break;
+                duration = 419.84;
+                break;
 
         case BMI160_ZERO_MOTION_DURATION_430_08S:
         default:
-            duration = 430.08;
-            break;
-    }
+                duration = 430.08;
+                break;
+        }
 
-    return duration;
+        return duration;
 }
 void CurieIMUClass::setZeroMotionDetectionDuration(float duration)
 {
-    BMI160ZeroMotionDuration bmiDuration;
+        BMI160ZeroMotionDuration bmiDuration;
 
-    if (duration <= 1.28) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_1_28S;
-    } else if (duration <= 2.56) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_2_56S;
-    } else if (duration <= 3.84) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_3_84S;
-    } else if (duration <= 5.12) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_5_12S;
-    } else if (duration <= 6.40) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_6_40S;
-    } else if (duration <= 7.68) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_7_68S;
-    } else if (duration <= 8.96) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_8_96S;
-    } else if (duration <= 10.24) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_10_24S;
-    } else if (duration <= 11.52) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_11_52S;
-    } else if (duration <= 12.80) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_12_80S;
-    } else if (duration <= 14.08) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_14_08S;
-    } else if (duration <= 15.36) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_15_36S;
-    } else if (duration <= 16.64) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_16_64S;
-    } else if (duration <= 17.92) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_17_92S;
-    } else if (duration <= 19.20) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_19_20S;
-    } else if (duration <= 20.48) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_20_48S;
-    } else if (duration <= 25.60) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_25_60S;
-    } else if (duration <= 30.72) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_30_72S;
-    } else if (duration <= 35.84) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_35_84S;
-    } else if (duration <= 40.96) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_40_96S;
-    } else if (duration <= 46.08) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_46_08S;
-    } else if (duration <= 51.20) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_51_20S;
-    } else if (duration <= 56.32) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_56_32S;
-    } else if (duration <= 61.44) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_61_44S;
-    } else if (duration <= 66.56) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_66_56S;
-    } else if (duration <= 71.68) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_71_68S;
-    } else if (duration <= 76.80) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_76_80S;
-    } else if (duration <= 81.92) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_81_92S;
-    } else if (duration <= 87.04) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_87_04S;
-    } else if (duration <= 92.16) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_92_16S;
-    } else if (duration <= 97.28) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_97_28S;
-    } else if (duration <= 102.40) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_102_40S;
-    } else if (duration <= 112.64) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_112_64S;
-    } else if (duration <= 122.88) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_122_88S;
-    } else if (duration <= 133.12) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_133_12S;
-    } else if (duration <= 143.36) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_143_36S;
-    } else if (duration <= 153.60) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_153_60S;
-    } else if (duration <= 163.84) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_163_84S;
-    } else if (duration <= 174.08) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_174_08S;
-    } else if (duration <= 184.32) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_184_32S;
-    } else if (duration <= 194.56) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_194_56S;
-    } else if (duration <= 204.80) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_204_80S;
-    } else if (duration <= 215.04) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_215_04S;
-    } else if (duration <= 225.28) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_225_28S;
-    } else if (duration <= 235.52) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_235_52S;
-    } else if (duration <= 245.76) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_245_76S;
-    } else if (duration <= 256.00) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_256_00S;
-    } else if (duration <= 266.24) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_266_24S;
-    } else if (duration <= 276.48) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_276_48S;
-    } else if (duration <= 286.72) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_286_72S;
-    } else if (duration <= 296.96) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_296_96S;
-    } else if (duration <= 307.20) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_307_20S;
-    } else if (duration <= 317.44) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_317_44S;
-    } else if (duration <= 327.68) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_327_68S;
-    } else if (duration <= 337.92) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_337_92S;
-    } else if (duration <= 348.16) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_348_16S;
-    } else if (duration <= 358.40) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_358_40S;
-    } else if (duration <= 368.64) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_368_64S;
-    } else if (duration <= 378.88) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_378_88S;
-    } else if (duration <= 389.12) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_389_12S;
-    } else if (duration <= 399.36) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_399_36S;
-    } else if (duration <= 409.60) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_409_60S;
-    } else if (duration <= 419.84) {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_419_84S;
-    } else {
-        bmiDuration = BMI160_ZERO_MOTION_DURATION_430_08S;
-    }
+        if (duration <= 1.28) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_1_28S;
+        } else if (duration <= 2.56) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_2_56S;
+        } else if (duration <= 3.84) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_3_84S;
+        } else if (duration <= 5.12) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_5_12S;
+        } else if (duration <= 6.40) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_6_40S;
+        } else if (duration <= 7.68) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_7_68S;
+        } else if (duration <= 8.96) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_8_96S;
+        } else if (duration <= 10.24) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_10_24S;
+        } else if (duration <= 11.52) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_11_52S;
+        } else if (duration <= 12.80) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_12_80S;
+        } else if (duration <= 14.08) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_14_08S;
+        } else if (duration <= 15.36) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_15_36S;
+        } else if (duration <= 16.64) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_16_64S;
+        } else if (duration <= 17.92) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_17_92S;
+        } else if (duration <= 19.20) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_19_20S;
+        } else if (duration <= 20.48) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_20_48S;
+        } else if (duration <= 25.60) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_25_60S;
+        } else if (duration <= 30.72) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_30_72S;
+        } else if (duration <= 35.84) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_35_84S;
+        } else if (duration <= 40.96) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_40_96S;
+        } else if (duration <= 46.08) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_46_08S;
+        } else if (duration <= 51.20) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_51_20S;
+        } else if (duration <= 56.32) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_56_32S;
+        } else if (duration <= 61.44) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_61_44S;
+        } else if (duration <= 66.56) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_66_56S;
+        } else if (duration <= 71.68) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_71_68S;
+        } else if (duration <= 76.80) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_76_80S;
+        } else if (duration <= 81.92) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_81_92S;
+        } else if (duration <= 87.04) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_87_04S;
+        } else if (duration <= 92.16) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_92_16S;
+        } else if (duration <= 97.28) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_97_28S;
+        } else if (duration <= 102.40) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_102_40S;
+        } else if (duration <= 112.64) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_112_64S;
+        } else if (duration <= 122.88) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_122_88S;
+        } else if (duration <= 133.12) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_133_12S;
+        } else if (duration <= 143.36) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_143_36S;
+        } else if (duration <= 153.60) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_153_60S;
+        } else if (duration <= 163.84) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_163_84S;
+        } else if (duration <= 174.08) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_174_08S;
+        } else if (duration <= 184.32) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_184_32S;
+        } else if (duration <= 194.56) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_194_56S;
+        } else if (duration <= 204.80) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_204_80S;
+        } else if (duration <= 215.04) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_215_04S;
+        } else if (duration <= 225.28) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_225_28S;
+        } else if (duration <= 235.52) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_235_52S;
+        } else if (duration <= 245.76) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_245_76S;
+        } else if (duration <= 256.00) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_256_00S;
+        } else if (duration <= 266.24) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_266_24S;
+        } else if (duration <= 276.48) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_276_48S;
+        } else if (duration <= 286.72) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_286_72S;
+        } else if (duration <= 296.96) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_296_96S;
+        } else if (duration <= 307.20) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_307_20S;
+        } else if (duration <= 317.44) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_317_44S;
+        } else if (duration <= 327.68) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_327_68S;
+        } else if (duration <= 337.92) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_337_92S;
+        } else if (duration <= 348.16) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_348_16S;
+        } else if (duration <= 358.40) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_358_40S;
+        } else if (duration <= 368.64) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_368_64S;
+        } else if (duration <= 378.88) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_378_88S;
+        } else if (duration <= 389.12) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_389_12S;
+        } else if (duration <= 399.36) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_399_36S;
+        } else if (duration <= 409.60) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_409_60S;
+        } else if (duration <= 419.84) {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_419_84S;
+        } else {
+                bmiDuration = BMI160_ZERO_MOTION_DURATION_430_08S;
+        }
 
-    BMI160Class::setZeroMotionDetectionDuration(bmiDuration);
+        BMI160Class::setZeroMotionDetectionDuration(bmiDuration);
 }
 
 int CurieIMUClass::getTapShockDuration()
 {
-    int duration;
+        int duration;
 
-    switch (BMI160Class::getTapShockDuration()) {
+        switch (BMI160Class::getTapShockDuration()) {
         case BMI160_TAP_SHOCK_DURATION_50MS:
-            duration = 50;
-            break;
+                duration = 50;
+                break;
 
         case BMI160_TAP_SHOCK_DURATION_75MS:
         default:
-            duration = 75;
-            break;
-    }
+                duration = 75;
+                break;
+        }
 
-    return duration;
+        return duration;
 }
 
 void CurieIMUClass::setTapShockDuration(int duration)
 {
-    BMI160TapShockDuration bmiDuration;
+        BMI160TapShockDuration bmiDuration;
 
-    if (duration <= 50) {
-        bmiDuration = BMI160_TAP_SHOCK_DURATION_50MS;
-    } else {
-        bmiDuration = BMI160_TAP_SHOCK_DURATION_75MS;
-    }
+        if (duration <= 50) {
+                bmiDuration = BMI160_TAP_SHOCK_DURATION_50MS;
+        } else {
+                bmiDuration = BMI160_TAP_SHOCK_DURATION_75MS;
+        }
 
-    BMI160Class::setTapShockDuration(bmiDuration);
+        BMI160Class::setTapShockDuration(bmiDuration);
 }
 
 int CurieIMUClass::getTapQuietDuration()
 {
-    int duration;
+        int duration;
 
-    switch (BMI160Class::getTapQuietDuration()) {
+        switch (BMI160Class::getTapQuietDuration()) {
         case BMI160_TAP_QUIET_DURATION_30MS:
-            duration = 30;
-            break;
+                duration = 30;
+                break;
 
         case BMI160_TAP_QUIET_DURATION_20MS:
         default:
-            duration = 20;
-            break;
-    }
+                duration = 20;
+                break;
+        }
 
-    return duration;
+        return duration;
 }
 
 void CurieIMUClass::setTapQuietDuration(int duration)
 {
-    BMI160TapQuietDuration bmiDuration;
+        BMI160TapQuietDuration bmiDuration;
 
-    if (duration >= 30) {
-        bmiDuration = BMI160_TAP_QUIET_DURATION_30MS;
-    } else {
-        bmiDuration = BMI160_TAP_QUIET_DURATION_20MS;
-    }
+        if (duration >= 30) {
+                bmiDuration = BMI160_TAP_QUIET_DURATION_30MS;
+        } else {
+                bmiDuration = BMI160_TAP_QUIET_DURATION_20MS;
+        }
 
-    BMI160Class::setTapQuietDuration(bmiDuration);
+        BMI160Class::setTapQuietDuration(bmiDuration);
 }
 
 int CurieIMUClass::getDoubleTapDetectionDuration()
 {
-    int duration;
+        int duration;
 
-    switch (BMI160Class::getDoubleTapDetectionDuration()) {
+        switch (BMI160Class::getDoubleTapDetectionDuration()) {
         case BMI160_DOUBLE_TAP_DURATION_50MS:
-            duration = 50;
-            break;
+                duration = 50;
+                break;
 
         case BMI160_DOUBLE_TAP_DURATION_100MS:
-            duration = 100;
-            break;
+                duration = 100;
+                break;
 
         case BMI160_DOUBLE_TAP_DURATION_150MS:
-            duration = 150;
-            break;
+                duration = 150;
+                break;
 
         case BMI160_DOUBLE_TAP_DURATION_200MS:
-            duration = 200;
-            break;
+                duration = 200;
+                break;
 
         case BMI160_DOUBLE_TAP_DURATION_250MS:
-            duration = 250;
-            break;
+                duration = 250;
+                break;
 
         case BMI160_DOUBLE_TAP_DURATION_375MS:
-            duration = 375;
-            break;
+                duration = 375;
+                break;
 
         case BMI160_DOUBLE_TAP_DURATION_500MS:
-            duration = 500;
-            break;
+                duration = 500;
+                break;
 
         case BMI160_DOUBLE_TAP_DURATION_700MS:
         default:
-            duration = 700;
-            break;
-    }
+                duration = 700;
+                break;
+        }
 
-    return duration;
+        return duration;
 }
 void CurieIMUClass::setDoubleTapDetectionDuration(int duration)
 {
-    BMI160DoubleTapDuration bmiDuration;
+        BMI160DoubleTapDuration bmiDuration;
 
-    if (duration <= 50) {
-        bmiDuration = BMI160_DOUBLE_TAP_DURATION_50MS;
-    } else if (duration <= 100) {
-        bmiDuration = BMI160_DOUBLE_TAP_DURATION_100MS;
-    } else if (duration <= 150) {
-        bmiDuration = BMI160_DOUBLE_TAP_DURATION_150MS;
-    } else if (duration <= 200) {
-        bmiDuration = BMI160_DOUBLE_TAP_DURATION_200MS;
-    } else if (duration <= 250) {
-        bmiDuration = BMI160_DOUBLE_TAP_DURATION_250MS;
-    } else if (duration <= 375) {
-        bmiDuration = BMI160_DOUBLE_TAP_DURATION_375MS;
-    } else if (duration <= 500) {
-        bmiDuration = BMI160_DOUBLE_TAP_DURATION_500MS;
-    } else {
-        bmiDuration = BMI160_DOUBLE_TAP_DURATION_700MS;
-    }
+        if (duration <= 50) {
+                bmiDuration = BMI160_DOUBLE_TAP_DURATION_50MS;
+        } else if (duration <= 100) {
+                bmiDuration = BMI160_DOUBLE_TAP_DURATION_100MS;
+        } else if (duration <= 150) {
+                bmiDuration = BMI160_DOUBLE_TAP_DURATION_150MS;
+        } else if (duration <= 200) {
+                bmiDuration = BMI160_DOUBLE_TAP_DURATION_200MS;
+        } else if (duration <= 250) {
+                bmiDuration = BMI160_DOUBLE_TAP_DURATION_250MS;
+        } else if (duration <= 375) {
+                bmiDuration = BMI160_DOUBLE_TAP_DURATION_375MS;
+        } else if (duration <= 500) {
+                bmiDuration = BMI160_DOUBLE_TAP_DURATION_500MS;
+        } else {
+                bmiDuration = BMI160_DOUBLE_TAP_DURATION_700MS;
+        }
 
-    BMI160Class::setDoubleTapDetectionDuration(bmiDuration);
+        BMI160Class::setDoubleTapDetectionDuration(bmiDuration);
 }
 
 #if defined(BMI160GEN_USE_CURIEIMU)
 void CurieIMUClass::interrupts(int feature)
 {
-    enableInterrupt(feature, true);
+        enableInterrupt(feature, true);
 }
 
 void CurieIMUClass::noInterrupts(int feature)
 {
-    enableInterrupt(feature, false);
+        enableInterrupt(feature, false);
 }
 #endif // defined(BMI160GEN_USE_CURIEIMU)
 
 void CurieIMUClass::enableInterrupt(int feature, bool enabled)
 {
-    switch (feature) {
+        switch (feature) {
         case CURIE_IMU_FREEFALL:
-            setIntFreefallEnabled(enabled);
-            break;
+                setIntFreefallEnabled(enabled);
+                break;
 
         case CURIE_IMU_SHOCK:
-            setIntShockEnabled(enabled);
-            break;
+                setIntShockEnabled(enabled);
+                break;
 
         case CURIE_IMU_STEP:
-            setIntStepEnabled(enabled);
-            break;
+                setIntStepEnabled(enabled);
+                break;
 
         case CURIE_IMU_MOTION:
-            setIntMotionEnabled(enabled);
-            break;
+                setIntMotionEnabled(enabled);
+                break;
 
         case CURIE_IMU_ZERO_MOTION:
-            setIntZeroMotionEnabled(enabled);
-            break;
+                setIntZeroMotionEnabled(enabled);
+                break;
 
-       case CURIE_IMU_TAP:
-            setIntTapEnabled(enabled);
-            break;
+        case CURIE_IMU_TAP:
+                setIntTapEnabled(enabled);
+                break;
 
         case CURIE_IMU_DOUBLE_TAP:
-            setIntDoubleTapEnabled(enabled);
-            break;
+                setIntDoubleTapEnabled(enabled);
+                break;
 
         case CURIE_IMU_FIFO_FULL:
-            setIntFIFOBufferFullEnabled(enabled);
-            break;
+                setIntFIFOBufferFullEnabled(enabled);
+                break;
 
         case CURIE_IMU_DATA_READY:
-            setIntDataReadyEnabled(enabled);
-            break;
+                setIntDataReadyEnabled(enabled);
+                break;
 
         case CURIE_IMU_TAP_QUIET:
         case CURIE_IMU_TAP_SHOCK:
         default:
-            break;
-    }
+                break;
+        }
 }
 
 bool CurieIMUClass::interruptsEnabled(int feature)
 {
-    switch (feature) {
+        switch (feature) {
         case CURIE_IMU_FREEFALL:
-            return getIntFreefallEnabled();
+                return getIntFreefallEnabled();
 
         case CURIE_IMU_SHOCK:
-            return getIntShockEnabled();
+                return getIntShockEnabled();
 
         case CURIE_IMU_STEP:
-            return getIntStepEnabled();
+                return getIntStepEnabled();
 
         case CURIE_IMU_MOTION:
-            return getIntMotionEnabled();
+                return getIntMotionEnabled();
 
         case CURIE_IMU_ZERO_MOTION:
-            return getIntZeroMotionEnabled();
+                return getIntZeroMotionEnabled();
 
-       case CURIE_IMU_TAP:
-            return getIntTapEnabled();
+        case CURIE_IMU_TAP:
+                return getIntTapEnabled();
 
         case CURIE_IMU_DOUBLE_TAP:
-            return getIntDoubleTapEnabled();
+                return getIntDoubleTapEnabled();
 
         case CURIE_IMU_FIFO_FULL:
-            return getIntFIFOBufferFullEnabled();
+                return getIntFIFOBufferFullEnabled();
 
         case CURIE_IMU_DATA_READY:
-            return getIntDataReadyEnabled();
+                return getIntDataReadyEnabled();
 
         case CURIE_IMU_TAP_QUIET:
         case CURIE_IMU_TAP_SHOCK:
         default:
-            return false;
-    }
+                return false;
+        }
 }
 
 bool CurieIMUClass::getInterruptStatus(int feature)
 {
-    switch (feature) {
+        switch (feature) {
         case CURIE_IMU_FREEFALL:
-            return getIntFreefallStatus();
+                return getIntFreefallStatus();
 
         case CURIE_IMU_SHOCK:
-            return getIntShockStatus();
+                return getIntShockStatus();
 
         case CURIE_IMU_STEP:
-            return getIntStepStatus();
+                return getIntStepStatus();
 
         case CURIE_IMU_MOTION:
-            return getIntMotionStatus();
+                return getIntMotionStatus();
 
         case CURIE_IMU_ZERO_MOTION:
-            return getIntZeroMotionStatus();
+                return getIntZeroMotionStatus();
 
         case CURIE_IMU_TAP:
-            return getIntTapStatus();
+                return getIntTapStatus();
 
         case CURIE_IMU_DOUBLE_TAP:
-            return getIntDoubleTapStatus();
+                return getIntDoubleTapStatus();
 
         case CURIE_IMU_FIFO_FULL:
-            return getIntFIFOBufferFullStatus();
+                return getIntFIFOBufferFullStatus();
 
         case CURIE_IMU_DATA_READY:
-            return getIntDataReadyStatus();
+                return getIntDataReadyStatus();
 
         case CURIE_IMU_TAP_QUIET:
         case CURIE_IMU_TAP_SHOCK:
         default:
-            return false;
-    }
+                return false;
+        }
 }
 
 CurieIMUStepMode CurieIMUClass::getStepDetectionMode()
 {
-    return (CurieIMUStepMode)BMI160Class::getStepDetectionMode();
+        return (CurieIMUStepMode)BMI160Class::getStepDetectionMode();
 }
 
 void CurieIMUClass::setStepDetectionMode(int mode)
 {
-    BMI160Class::setStepDetectionMode((BMI160StepMode)mode);
+        BMI160Class::setStepDetectionMode((BMI160StepMode)mode);
 }
 
 void CurieIMUClass::readMotionSensor(int& ax, int& ay, int& az, int& gx, int& gy, int& gz)
 {
-    int16_t sax, say, saz, sgx, sgy, sgz;
+        int16_t sax, say, saz, sgx, sgy, sgz;
 
-    getMotion6(&sax, &say, &saz, &sgx, &sgy, &sgz);
+        getMotion6(&sax, &say, &saz, &sgx, &sgy, &sgz);
 
-    ax = sax;
-    ay = say;
-    az = saz;
-    gx = sgx;
-    gy = sgy;
-    gz = sgz;
+        ax = sax;
+        ay = say;
+        az = saz;
+        gx = sgx;
+        gy = sgy;
+        gz = sgz;
 }
 
 void CurieIMUClass::readAccelerometer(int& x, int& y, int& z)
 {
-    int16_t sx, sy, sz;
+        int16_t sx, sy, sz;
 
-    getAcceleration(&sx, &sy, &sz);
+        getAcceleration(&sx, &sy, &sz);
 
-    x = sx;
-    y = sy;
-    z = sz;
+        x = sx;
+        y = sy;
+        z = sz;
 }
 
 void CurieIMUClass::readGyro(int& x, int& y, int& z)
 {
-    int16_t sx, sy, sz;
+        int16_t sx, sy, sz;
 
-    getRotation(&sx, &sy, &sz);
+        getRotation(&sx, &sy, &sz);
 
-    x = sx;
-    y = sy;
-    z = sz;
+        x = sx;
+        y = sy;
+        z = sz;
 }
 
 int CurieIMUClass::readAccelerometer(int axis)
 {
-    if (axis == X_AXIS) {
-        return getAccelerationX();
-    } else if (axis == Y_AXIS) {
-        return getAccelerationY();
-    } else if (axis == Z_AXIS) {
-        return getAccelerationZ();
-    }
+        if (axis == X_AXIS) {
+                return getAccelerationX();
+        } else if (axis == Y_AXIS) {
+                return getAccelerationY();
+        } else if (axis == Z_AXIS) {
+                return getAccelerationZ();
+        }
 
-    return 0; 
+        return 0;
 }
 
 int CurieIMUClass::readGyro(int axis)
 {
-    if (axis == X_AXIS) {
-        return getRotationX();
-    } else if (axis == Y_AXIS) {
-        return getRotationY();
-    } else if (axis == Z_AXIS) {
-        return getRotationZ();
-    }
+        if (axis == X_AXIS) {
+                return getRotationX();
+        } else if (axis == Y_AXIS) {
+                return getRotationY();
+        } else if (axis == Z_AXIS) {
+                return getRotationZ();
+        }
 
-    return 0;
+        return 0;
 }
 
 int CurieIMUClass::readTemperature()
 {
-    return getTemperature();
+        return getTemperature();
 }
 
 bool CurieIMUClass::shockDetected(int axis, int direction)
 {
-    if (direction == POSITIVE) {
-        if (axis == X_AXIS) {
-            return getXPosShockDetected();
-        } else if (axis == Y_AXIS) {
-            return getYPosShockDetected();
-        } else if (axis == Z_AXIS) {
-            return getZPosShockDetected();
+        if (direction == POSITIVE) {
+                if (axis == X_AXIS) {
+                        return getXPosShockDetected();
+                } else if (axis == Y_AXIS) {
+                        return getYPosShockDetected();
+                } else if (axis == Z_AXIS) {
+                        return getZPosShockDetected();
+                }
+        } else if (direction == NEGATIVE) {
+                if (axis == X_AXIS) {
+                        return getXNegShockDetected();
+                } else if (axis == Y_AXIS) {
+                        return getYNegShockDetected();
+                } else if (axis == Z_AXIS) {
+                        return getZNegShockDetected();
+                }
         }
-    } else if (direction == NEGATIVE) {
-        if (axis == X_AXIS) {
-            return getXNegShockDetected();
-        } else if (axis == Y_AXIS) {
-            return getYNegShockDetected();
-        } else if (axis == Z_AXIS) {
-            return getZNegShockDetected();
-        }
-    }
 
-    return false;
+        return false;
 }
 
 bool CurieIMUClass::motionDetected(int axis, int direction)
 {
-    if (direction == POSITIVE) {
-        if (axis == X_AXIS) {
-            return getXPosMotionDetected();
-        } else if (axis == Y_AXIS) {
-            return getYPosMotionDetected();
-        } else if (axis == Z_AXIS) {
-            return getZPosMotionDetected();
+        if (direction == POSITIVE) {
+                if (axis == X_AXIS) {
+                        return getXPosMotionDetected();
+                } else if (axis == Y_AXIS) {
+                        return getYPosMotionDetected();
+                } else if (axis == Z_AXIS) {
+                        return getZPosMotionDetected();
+                }
+        } else if (direction == NEGATIVE) {
+                if (axis == X_AXIS) {
+                        return getXNegMotionDetected();
+                } else if (axis == Y_AXIS) {
+                        return getYNegMotionDetected();
+                } else if (axis == Z_AXIS) {
+                        return getZNegMotionDetected();
+                }
         }
-    } else if (direction == NEGATIVE) {
-        if (axis == X_AXIS) {
-            return getXNegMotionDetected();
-        } else if (axis == Y_AXIS) {
-            return getYNegMotionDetected();
-        } else if (axis == Z_AXIS) {
-            return getZNegMotionDetected();
-        }
-    }
 
-    return false;
+        return false;
 }
 
 bool CurieIMUClass::tapDetected(int axis, int direction)
 {
-    if (direction == POSITIVE) {
-        if (axis == X_AXIS) {
-            return getXPosTapDetected();
-        } else if (axis == Y_AXIS) {
-            return getYPosTapDetected();
-        } else if (axis == Z_AXIS) {
-            return getZPosTapDetected();
+        if (direction == POSITIVE) {
+                if (axis == X_AXIS) {
+                        return getXPosTapDetected();
+                } else if (axis == Y_AXIS) {
+                        return getYPosTapDetected();
+                } else if (axis == Z_AXIS) {
+                        return getZPosTapDetected();
+                }
+        } else if (direction == NEGATIVE) {
+                if (axis == X_AXIS) {
+                        return getXNegTapDetected();
+                } else if (axis == Y_AXIS) {
+                        return getYNegTapDetected();
+                } else if (axis == Z_AXIS) {
+                        return getZNegTapDetected();
+                }
         }
-    } else if (direction == NEGATIVE) {
-        if (axis == X_AXIS) {
-            return getXNegTapDetected();
-        } else if (axis == Y_AXIS) {
-            return getYNegTapDetected();
-        } else if (axis == Z_AXIS) {
-            return getZNegTapDetected();
-        }
-    }
 
-    return false;
+        return false;
 }
 
 bool CurieIMUClass::stepsDetected()
 {
-    return getIntStepStatus();
+        return getIntStepStatus();
 }
 
 /** Provides a serial buffer transfer implementation for the BMI160 base class
  *  to use for accessing device registers.  This implementation uses the SPI
  *  bus on the Intel Curie module to communicate with the BMI160.
  */
-int CurieIMUClass::serial_buffer_transfer(uint8_t *buf, unsigned tx_cnt, unsigned rx_cnt)
-{
-    int flags, status;
+// int CurieIMUClass::serial_buffer_transfer(uint8_t *buf, unsigned tx_cnt, unsigned rx_cnt)
+// {
+//     int flags, status;
+//
+//     if (rx_cnt) /* For read transfers, assume 1st byte contains register address */
+//         buf[0] |= (1 << BMI160_SPI_READ_BIT);
+//
+//     /* Lock interrupts here to
+//      * - avoid concurrent access to the SPI bus
+//      * - avoid delays in SPI transfer due to unrelated interrupts
+//      */
+//     flags = interrupt_lock();
+//     status = ss_spi_xfer(buf, tx_cnt, rx_cnt);
+//     interrupt_unlock(flags);
+//
+//     return status;
+// }
 
-    if (rx_cnt) /* For read transfers, assume 1st byte contains register address */
-        buf[0] |= (1 << BMI160_SPI_READ_BIT);
+/**THIS IS MODIFIED FOR I2C transmistion, PLEASE USE AT YOUR OWN RISK
+ * lpercifield
+ */
+int CurieIMUClass::serial_buffer_transfer(uint8_t *buf, unsigned tx_cnt, unsigned rx_cnt){
+        int flags, status;
+        int byteCounter = 0;
+        if(rx_cnt){
+                Wire.beginTransmission(BMI160_ADD);
+                Wire.write(buf[0]);
+                Wire.endTransmission(false);
+                Wire.requestFrom(BMI160_ADD,rx_cnt);
+                while(Wire.available()) {
+                        buf[byteCounter] = Wire.read();
+                        byteCounter++;
+                }
+        }else{
+                Wire.beginTransmission(BMI160_ADD);
+                for(unsigned i =0;i<tx_cnt;i++){
+                        Wire.write(buf[i]);
+                }
+                Wire.endTransmission(true);
+        }
 
-    /* Lock interrupts here to
-     * - avoid concurrent access to the SPI bus
-     * - avoid delays in SPI transfer due to unrelated interrupts
-     */
-    flags = interrupt_lock();
-    status = ss_spi_xfer(buf, tx_cnt, rx_cnt);
-    interrupt_unlock(flags);
-
-    return status;
+        return status;
 }
-
 /** Interrupt handler for interrupts from PIN1 on the BMI160
  *  Calls a user callback if available.  The user callback is
  *  responsible for checking the source of the interrupt using
@@ -1732,10 +1758,10 @@ int CurieIMUClass::serial_buffer_transfer(uint8_t *buf, unsigned tx_cnt, unsigne
  */
 void bmi160_pin1_isr(void)
 {
-    soc_gpio_mask_interrupt(SOC_GPIO_AON, BMI160_GPIN_AON_PIN);
-    if (CurieIMU._user_callback)
-        CurieIMU._user_callback();
-    soc_gpio_unmask_interrupt(SOC_GPIO_AON, BMI160_GPIN_AON_PIN);
+        soc_gpio_mask_interrupt(SOC_GPIO_AON, BMI160_GPIN_AON_PIN);
+        if (CurieIMU._user_callback)
+                CurieIMU._user_callback();
+        soc_gpio_unmask_interrupt(SOC_GPIO_AON, BMI160_GPIN_AON_PIN);
 }
 
 /** Stores a user callback, and enables PIN1 interrupts from the
@@ -1744,33 +1770,33 @@ void bmi160_pin1_isr(void)
 void CurieIMUClass::attachInterrupt(void (*callback)(void))
 {
 #if defined(BMI160GEN_USE_CURIEIMU)
-    gpio_cfg_data_t cfg;
+        gpio_cfg_data_t cfg;
 
-    _user_callback = callback;
+        _user_callback = callback;
 
-    memset(&cfg, 0, sizeof(gpio_cfg_data_t));
-    cfg.gpio_type = GPIO_INTERRUPT;
-    cfg.int_type = EDGE;
-    cfg.int_polarity = ACTIVE_LOW;
-    cfg.int_debounce = DEBOUNCE_ON;
-    cfg.gpio_cb = bmi160_pin1_isr;
-    soc_gpio_set_config(SOC_GPIO_AON, BMI160_GPIN_AON_PIN, &cfg);
+        memset(&cfg, 0, sizeof(gpio_cfg_data_t));
+        cfg.gpio_type = GPIO_INTERRUPT;
+        cfg.int_type = EDGE;
+        cfg.int_polarity = ACTIVE_LOW;
+        cfg.int_debounce = DEBOUNCE_ON;
+        cfg.gpio_cb = bmi160_pin1_isr;
+        soc_gpio_set_config(SOC_GPIO_AON, BMI160_GPIN_AON_PIN, &cfg);
 #endif
 
-    setInterruptMode(1);  // Active-Low
-    setInterruptDrive(0); // Push-Pull
-    setInterruptLatch(BMI160_LATCH_MODE_10_MS); // 10ms pulse
-    setIntEnabled(true);
+        setInterruptMode(1); // Active-Low
+        setInterruptDrive(0); // Push-Pull
+        setInterruptLatch(BMI160_LATCH_MODE_10_MS); // 10ms pulse
+        setIntEnabled(true);
 }
 
 /** Disables PIN1 interrupts from the BMI160 module.
  */
 void CurieIMUClass::detachInterrupt(void)
 {
-    setIntEnabled(false);
+        setIntEnabled(false);
 
 #if defined(BMI160GEN_USE_CURIEIMU)
-    soc_gpio_deconfig(SOC_GPIO_AON, BMI160_GPIN_AON_PIN);
+        soc_gpio_deconfig(SOC_GPIO_AON, BMI160_GPIN_AON_PIN);
 #endif
 }
 

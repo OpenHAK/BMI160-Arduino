@@ -195,6 +195,8 @@ THE SOFTWARE.
 #define BMI160_FOC_ACC_X_LEN        2
 #define BMI160_FOC_GYR_EN           6
 
+#define BMI160_ADD                  0x68 // I2C address
+
 #define BMI160_RA_FOC_CONF          0x69
 
 #define BMI160_GYR_OFFSET_X_MSB_BIT 0
