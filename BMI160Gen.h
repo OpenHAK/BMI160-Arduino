@@ -6,9 +6,10 @@
 
 class BMI160GenClass : public CurieIMUClass {
     protected:
-        int interrupt_pin = -1;
+        int interrupt_pin1 = -1;
+        int interrupt_pin2 = -1;
     public:
-        bool begin(const int spi_cs_pin = -1, const int intr_pin = -1);
+        bool begin(const int spi_cs_pin = -1, const int intr_pin1 = -1, const int intr_pin2 = -1);
         void attachInterrupt(void (*callback)(void));
 };
 

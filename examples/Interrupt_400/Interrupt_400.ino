@@ -25,6 +25,7 @@ void bmi160_intr(void)
 
 void setup() {
   Wire.beginOnPins(SCL_PIN,SDA_PIN);
+  NRF_TWI1->FREQUENCY = TWI_FREQUENCY_FREQUENCY_K400 << TWI_FREQUENCY_FREQUENCY_Pos; 
   Serial.begin(9600); // initialize Serial communication
   while (!Serial);    // wait for the serial port to open
 
