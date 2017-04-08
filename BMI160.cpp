@@ -103,17 +103,17 @@ void BMI160Class::initialize()
                                 BMI160_ACC_PMU_STATUS_BIT,
                                 BMI160_ACC_PMU_STATUS_LEN))
         delay(1);
-
+    reg_write(BMI160_RA_CMD, BMI160_CMD_ACC_MODE_LOW);
     /* Power up the gyroscope */
-    reg_write(BMI160_RA_CMD, BMI160_CMD_GYR_MODE_NORMAL);
-    delay(1);
-    /* Wait for power-up to complete */
-    while (0x1 != reg_read_bits(BMI160_RA_PMU_STATUS,
-                                BMI160_GYR_PMU_STATUS_BIT,
-                                BMI160_GYR_PMU_STATUS_LEN))
-        delay(1);
-
-    setFullScaleGyroRange(BMI160_GYRO_RANGE_250);
+    // reg_write(BMI160_RA_CMD, BMI160_CMD_GYR_MODE_NORMAL);
+    // delay(1);
+    // /* Wait for power-up to complete */
+    // while (0x1 != reg_read_bits(BMI160_RA_PMU_STATUS,
+    //                             BMI160_GYR_PMU_STATUS_BIT,
+    //                             BMI160_GYR_PMU_STATUS_LEN))
+    //     delay(1);
+    //
+    // setFullScaleGyroRange(BMI160_GYRO_RANGE_250);
     setFullScaleAccelRange(BMI160_ACCEL_RANGE_2G);
 
     /* Only PIN1 interrupts currently supported - map all interrupts to PIN1 */
@@ -1033,7 +1033,7 @@ void BMI160Class::setMotionDetectionDuration(uint8_t samples) {
  * Zero Motion is detected when the difference between the value of
  * consecutive accelerometer measurements for each axis remains smaller than
  * this Motion detection threshold. This condition triggers the Zero Motion
- * interrupt if the condition is maintained for a time duration 
+ * interrupt if the condition is maintained for a time duration
  * specified in the int_slo_no_mot_dur field of the INT_MOTION[0] register (@see
  * BMI160_RA_INT_MOTION_0), and clears the interrupt when the condition is
  * then absent for the same duration.
@@ -1123,7 +1123,7 @@ void BMI160Class::setZeroMotionDetectionDuration(uint8_t duration) {
  * A Tap is detected as a shock event which exceeds the detection threshold for
  * a specified duration.  A threshold between 0.7g and 1.5g in the 2g
  * measurement range is suggested for typical tap detection applications.
- * 
+ *
  * For more details on the Tap detection interrupt, see Section 2.6.4 of the
  * BMI160 Data Sheet.
  *
@@ -1561,7 +1561,7 @@ uint16_t BMI160Class::getFIFOCount() {
 /** Reset the FIFO.
  * This command clears all data in the FIFO buffer.  It is recommended
  * to invoke this after reconfiguring the FIFO.
- * 
+ *
  * @see BMI160_RA_CMD
  * @see BMI160_CMD_FIFO_FLUSH
  */
@@ -1571,7 +1571,7 @@ void BMI160Class::resetFIFO() {
 
 /** Reset the Interrupt controller.
  * This command clears interrupt status registers and latched interrupts.
- * 
+ *
  * @see BMI160_RA_CMD
  * @see BMI160_CMD_FIFO_FLUSH
  */
